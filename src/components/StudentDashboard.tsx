@@ -2,15 +2,19 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
-import { ArrowLeft, BookOpen, Calendar, FileText, TrendingUp, Clock, AlertCircle } from "lucide-react";
+import { ArrowLeft, BookOpen, Calendar, FileText, TrendingUp, Clock, AlertCircle, LogOut } from "lucide-react";
+import { ThemeToggle } from "@/components/ui/theme-toggle";
+import { useAuth } from "./AuthProvider";
 
 interface StudentDashboardProps {
   onBack: () => void;
 }
 
 const StudentDashboard = ({ onBack }: StudentDashboardProps) => {
+  const { user } = useAuth();
+  
   const studentData = {
-    name: "Aarav Sharma",
+    name: user?.username === 'student' ? "Aarav Sharma" : user?.username || "Student",
     rollNumber: "CS21B1001",
     semester: "6th Semester",
     branch: "Computer Science",
@@ -105,20 +109,23 @@ const StudentDashboard = ({ onBack }: StudentDashboardProps) => {
               onClick={onBack}
               className="hover:bg-primary/10"
             >
-              <ArrowLeft className="h-5 w-5" />
+              <LogOut className="h-5 w-5" />
             </Button>
             <div>
               <h1 className="text-3xl font-bold">Student Dashboard</h1>
               <p className="text-muted-foreground">Welcome back, {studentData.name}</p>
             </div>
           </div>
-          <Card className="p-4 bg-gradient-card border-0">
-            <div className="text-sm text-muted-foreground">Student ID</div>
-            <div className="font-semibold">{studentData.rollNumber}</div>
-            <div className="text-xs text-muted-foreground mt-1">
-              {studentData.semester} • {studentData.branch}
-            </div>
-          </Card>
+          <div className="flex items-center gap-4">
+            <ThemeToggle />
+            <Card className="p-4 bg-gradient-card border-0">
+              <div className="text-sm text-muted-foreground">Student ID</div>
+              <div className="font-semibold">{studentData.rollNumber}</div>
+              <div className="text-xs text-muted-foreground mt-1">
+                {studentData.semester} • {studentData.branch}
+              </div>
+            </Card>
+          </div>
         </div>
 
         {/* Overview Cards */}

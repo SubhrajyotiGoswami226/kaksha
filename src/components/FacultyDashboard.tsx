@@ -2,15 +2,19 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { ArrowLeft, BookOpen, Users, FileText, Calendar, Upload, Download, Plus, CheckCircle } from "lucide-react";
+import { ArrowLeft, BookOpen, Users, FileText, Calendar, Upload, Download, Plus, CheckCircle, LogOut } from "lucide-react";
+import { ThemeToggle } from "@/components/ui/theme-toggle";
+import { useAuth } from "./AuthProvider";
 
 interface FacultyDashboardProps {
   onBack: () => void;
 }
 
 const FacultyDashboard = ({ onBack }: FacultyDashboardProps) => {
+  const { user } = useAuth();
+  
   const facultyData = {
-    name: "Dr. Priya Mehta",
+    name: user?.username === 'teacher' ? "Dr. Priya Mehta" : user?.username || "Faculty",
     department: "Computer Science",
     branch: "Engineering",
     employeeId: "FAC001",
@@ -103,20 +107,23 @@ const FacultyDashboard = ({ onBack }: FacultyDashboardProps) => {
               onClick={onBack}
               className="hover:bg-primary/10"
             >
-              <ArrowLeft className="h-5 w-5" />
+              <LogOut className="h-5 w-5" />
             </Button>
             <div>
               <h1 className="text-3xl font-bold">Faculty Dashboard</h1>
               <p className="text-muted-foreground">Welcome back, {facultyData.name}</p>
             </div>
           </div>
-          <Card className="p-4 bg-gradient-card border-0">
-            <div className="text-sm text-muted-foreground">Faculty ID</div>
-            <div className="font-semibold">{facultyData.employeeId}</div>
-            <div className="text-xs text-muted-foreground mt-1">
-              {facultyData.department} Department
+          <div className="flex items-center gap-4">
+            <ThemeToggle />
+            <Card className="p-4 bg-gradient-card border-0">
+              <div className="text-sm text-muted-foreground">Faculty ID</div>
+              <div className="font-semibold">{facultyData.employeeId}</div>
+              <div className="text-xs text-muted-foreground mt-1">
+                {facultyData.department} Department
+              </div>
+            </Card>
             </div>
-          </Card>
         </div>
 
         {/* Quick Actions */}

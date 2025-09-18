@@ -3,24 +3,44 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { GraduationCap, Users, BookOpen, TrendingUp, Calendar, FileText } from "lucide-react";
+import { ThemeToggle } from "@/components/ui/theme-toggle";
+import { useAuth } from "./AuthProvider";
 import StudentDashboard from "./StudentDashboard";
 import FacultyDashboard from "./FacultyDashboard";
+import LoginForm from "./LoginForm";
 
-type UserRole = 'student' | 'faculty' | null;
+type ViewState = 'home' | 'login' | 'dashboard';
 
 const LandingPage = () => {
-  const [selectedRole, setSelectedRole] = useState<UserRole>(null);
+  const [currentView, setCurrentView] = useState<ViewState>('home');
+  const { user, logout, isAuthenticated } = useAuth();
 
-  if (selectedRole === 'student') {
-    return <StudentDashboard onBack={() => setSelectedRole(null)} />;
+  if (currentView === 'login') {
+    return <LoginForm onBack={() => setCurrentView('home')} />;
   }
 
-  if (selectedRole === 'faculty') {
-    return <FacultyDashboard onBack={() => setSelectedRole(null)} />;
+  if (isAuthenticated && user) {
+    if (user.role === 'student') {
+      return <StudentDashboard onBack={() => {
+        logout();
+        setCurrentView('home');
+      }} />;
+    }
+    if (user.role === 'faculty') {
+      return <FacultyDashboard onBack={() => {
+        logout();
+        setCurrentView('home');
+      }} />;
+    }
   }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background to-muted">
+      {/* Theme Toggle */}
+      <div className="absolute top-4 right-4 z-10">
+        <ThemeToggle />
+      </div>
+      
       {/* Hero Section */}
       <div className="relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-hero opacity-10" />
@@ -58,7 +78,7 @@ const LandingPage = () => {
           <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
             <Card 
               className="group p-8 cursor-pointer transition-all duration-300 hover:scale-105 hover:shadow-card bg-gradient-card border-0 relative overflow-hidden"
-              onClick={() => setSelectedRole('student')}
+              onClick={() => setCurrentView('login')}
             >
               <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-accent opacity-10 rounded-full transform translate-x-16 -translate-y-16" />
               <div className="relative">
@@ -89,7 +109,7 @@ const LandingPage = () => {
 
             <Card 
               className="group p-8 cursor-pointer transition-all duration-300 hover:scale-105 hover:shadow-card bg-gradient-card border-0 relative overflow-hidden"
-              onClick={() => setSelectedRole('faculty')}
+              onClick={() => setCurrentView('login')}
             >
               <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-hero opacity-10 rounded-full transform translate-x-16 -translate-y-16" />
               <div className="relative">
@@ -121,7 +141,7 @@ const LandingPage = () => {
 
           <div className="text-center mt-12">
             <p className="text-sm text-muted-foreground">
-              Choose your role to access the appropriate dashboard and features
+              Click on any portal above to login and access your dashboard
             </p>
           </div>
         </div>
